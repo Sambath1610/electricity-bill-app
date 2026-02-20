@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Electricity Bill Calculator</title>
+
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 320px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #4facfe;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #3a8de0;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #222;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>Electricity Bill Calculator</h2>
+
+    <input type="number" id="previous" placeholder="Previous Reading">
+    <input type="number" id="current" placeholder="Current Reading">
+
+    <button onclick="calculateBill()">Calculate Bill</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function calculateBill() {
+      let previous = parseInt(document.getElementById("previous").value);
+      let current = parseInt(document.getElementById("current").value);
+
+      if (isNaN(previous) || isNaN(current) || current < previous) {
+        document.getElementById("result").innerText = "Enter valid readings";
+        return;
+      }
+
+      let units = current - previous;
+      let amount = 0;
+
+      // Example slab
+      if (units <= 100) amount = 0;
+      else if (units <= 200) amount = (units - 100) * 2.25;
+      else if (units <= 400) amount = (100 * 2.25) + (units - 200) * 4.5;
+      else amount = (100 * 2.25) + (200 * 4.5) + (units - 400) * 6;
+
+      document.getElementById("result").innerText =
+        "Units Used: " + units + " | Amount: ₹" + amount.toFixed(2);
+    }
+  </script>
+
+</body>
+</html>
