@@ -92,11 +92,35 @@
       let units = current - previous;
       let amount = 0;
 
-      // Example slab
-      if (units <= 100) amount = 0;
-      else if (units <= 200) amount = (units - 100) * 2.25;
-      else if (units <= 400) amount = (100 * 2.25) + (units - 200) * 4.5;
-      else amount = (100 * 2.25) + (200 * 4.5) + (units - 400) * 6;
+      // Updated slab rates from your image
+      if (units <= 100) {
+        amount = 0;
+      }
+      else if (units <= 200) {
+        amount = (units - 100) * 2.35;
+      }
+      else if (units <= 400) {
+        amount = (100 * 2.35) + (units - 200) * 4.7;
+      }
+      else if (units <= 500) {
+        amount = (100 * 2.35) + (200 * 4.7) + (units - 400) * 6.3;
+      }
+      else if (units <= 600) {
+        amount = (100 * 2.35) + (200 * 4.7) + (100 * 6.3) + (units - 500) * 8.4;
+      }
+      else if (units <= 800) {
+        amount = (100 * 2.35) + (200 * 4.7) + (100 * 6.3) +
+                 (100 * 8.4) + (units - 600) * 9.45;
+      }
+      else if (units <= 1000) {
+        amount = (100 * 2.35) + (200 * 4.7) + (100 * 6.3) +
+                 (100 * 8.4) + (200 * 9.45) + (units - 800) * 10.5;
+      }
+      else {
+        amount = (100 * 2.35) + (200 * 4.7) + (100 * 6.3) +
+                 (100 * 8.4) + (200 * 9.45) + (200 * 10.5) +
+                 (units - 1000) * 11.55;
+      }
 
       document.getElementById("result").innerText =
         "Units Used: " + units + " | Amount: ₹" + amount.toFixed(2);
