@@ -1,131 +1,624 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Electricity Bill Calculator</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: linear-gradient(135deg, #4facfe, #00f2fe);
-      font-family: Arial, sans-serif;
-    }
+    <title>EB Bill Calculator</title>
 
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      text-align: center;
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-      /* 🔥 Responsive width */
-      width: 90%;
-      max-width: 380px;
-    }
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            color: #222;
+        }
 
-    h2 {
-      margin-bottom: 20px;
-      color: #333;
-    }
+        .container {
+            max-width: 450px;
+            margin: 60px auto;
+            padding: 20px;
+        }
 
-    input {
-      width: 100%; /* full width */
-      padding: 12px;
-      margin: 10px 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      box-sizing: border-box;
-    }
+        .card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
 
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #4facfe;
-      border: none;
-      color: white;
-      font-size: 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 10px;
-    }
+        h1 {
+            text-align: center;
+            margin: 0 0 30px;
+            font-size: 26px;
+        }
 
-    button:hover {
-      background: #3a8de0;
-    }
+        .form-group {
+            margin-bottom: 20px;
+        }
 
-    #result {
-      margin-top: 20px;
-      font-weight: bold;
-      color: #222;
-    }
-  </style>
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px 14px;
+            font-size: 18px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2563eb;
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .result {
+            margin-top: 25px;
+            display: none;
+        }
+
+        .result-box {
+            padding: 18px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .row:last-child {
+            border-bottom: none;
+        }
+
+        .amount-box {
+            margin-top: 15px;
+            padding: 20px;
+            text-align: center;
+            background: #dcfce7;
+            border-radius: 10px;
+        }
+
+        .amount-label {
+            font-size: 14px;
+            color: #166534;
+        }
+
+        .amount {
+            display: block;
+            margin-top: 5px;
+            font-size: 30px;
+            font-weight: bold;
+            color: #166534;
+        }
+
+        .breakdown {
+            margin-top: 20px;
+        }
+
+        .breakdown h3 {
+            margin-bottom: 10px;
+            font-size: 17px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            padding: 9px 5px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #f1f5f9;
+        }
+
+        .error {
+            display: none;
+            margin-top: 10px;
+            color: #dc2626;
+            font-size: 14px;
+        }
+
+        @media (max-width: 500px) {
+            .container {
+                margin: 20px auto;
+                padding: 15px;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-  <div class="container">
-    <h2>Electricity Bill Calculator</h2>
+<div class="container">
 
-    <input type="number" id="previous" placeholder="Previous Reading">
-    <input type="number" id="current" placeholder="Current Reading">
+    <div class="card">
 
-    <button onclick="calculateBill()">Calculate Bill</button>
+        <h1>⚡ EB Bill Calculator</h1>
 
-    <div id="result"></div>
-  </div>
+        <div class="form-group">
 
-  <script>
-    function calculateBill() {
-      let previous = parseInt(document.getElementById("previous").value);
-      let current = parseInt(document.getElementById("current").value);
+            <label for="units">
+                This Month Units
+            </label>
 
-      if (isNaN(previous) || isNaN(current) || current < previous) {
-        document.getElementById("result").innerText = "Enter valid readings";
+            <input
+                type="number"
+                id="units"
+                min="0"
+                step="1"
+                placeholder="Enter units e.g. 307"
+            >
+
+            <div class="error" id="error"></div>
+
+        </div>
+
+        <button onclick="calculateBill()">
+            Calculate Bill
+        </button>
+
+
+        <!-- Result -->
+
+        <div class="result" id="result">
+
+            <div class="result-box">
+
+                <div class="row">
+                    <span>Units Used</span>
+                    <strong id="totalUnits">0</strong>
+                </div>
+
+                <div class="row">
+                    <span>Tariff Type</span>
+                    <strong id="tariffType">-</strong>
+                </div>
+
+            </div>
+
+
+            <!-- Amount -->
+
+            <div class="amount-box">
+
+                <span class="amount-label">
+                    Estimated EB Amount
+                </span>
+
+                <span class="amount" id="totalAmount">
+                    ₹0.00
+                </span>
+
+            </div>
+
+
+            <!-- Breakdown -->
+
+            <div class="breakdown">
+
+                <h3>Bill Breakdown</h3>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>Slab</th>
+                            <th>Units</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="breakdownBody">
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+function calculateBill() {
+
+    const input = document.getElementById("units");
+    const units = Number(input.value);
+
+    const error = document.getElementById("error");
+    const result = document.getElementById("result");
+
+    error.style.display = "none";
+    result.style.display = "none";
+
+
+    // Validation
+
+    if (input.value === "") {
+
+        error.textContent = "Please enter the units.";
+        error.style.display = "block";
+
         return;
-      }
-
-      let units = current - previous;
-      let amount = 0;
-
-      // Updated slab rates from your image
-      if (units <= 100) {
-        amount = 0;
-      }
-      else if (units <= 200) {
-        amount = (units - 100) * 2.35;
-      }
-      else if (units <= 400) {
-        amount = (100 * 2.35) + (units - 200) * 4.7;
-      }
-      else if (units <= 500) {
-        amount = (100 * 2.35) + (200 * 4.7) + (units - 400) * 6.3;
-      }
-      else if (units <= 600) {
-        amount = (100 * 2.35) + (200 * 4.7) + (100 * 6.3) + (units - 500) * 8.4;
-      }
-      else if (units <= 800) {
-        amount = (100 * 2.35) + (200 * 4.7) + (100 * 6.3) +
-                 (100 * 8.4) + (units - 600) * 9.45;
-      }
-      else if (units <= 1000) {
-        amount = (100 * 2.35) + (200 * 4.7) + (100 * 6.3) +
-                 (100 * 8.4) + (200 * 9.45) + (units - 800) * 10.5;
-      }
-      else {
-        amount = (100 * 2.35) + (200 * 4.7) + (100 * 6.3) +
-                 (100 * 8.4) + (200 * 9.45) + (200 * 10.5) +
-                 (units - 1000) * 11.55;
-      }
-
-      document.getElementById("result").innerText =
-        "Units Used: " + units + " | Amount: ₹" + amount.toFixed(2);
     }
-  </script>
+
+    if (units < 0) {
+
+        error.textContent = "Units cannot be negative.";
+        error.style.display = "block";
+
+        return;
+    }
+
+
+    let totalAmount = 0;
+
+    let breakdown = [];
+
+
+    /*
+    ==========================================
+    UP TO 500 UNITS
+    ==========================================
+
+    1 - 100       ₹0
+    101 - 200     ₹0
+    201 - 400     ₹4.70
+    401 - 500     ₹6.30
+    */
+
+
+    if (units <= 500) {
+
+        document.getElementById("tariffType").textContent =
+            "Up to 500 Units";
+
+
+        // 1 - 100
+
+        if (units > 0) {
+
+            const slabUnits = Math.min(units, 100);
+
+            const rate = 0;
+
+            const amount = slabUnits * rate;
+
+            breakdown.push({
+                slab: "1 - 100",
+                units: slabUnits,
+                rate: rate,
+                amount: amount
+            });
+
+            totalAmount += amount;
+        }
+
+
+        // 101 - 200
+
+        if (units > 100) {
+
+            const slabUnits =
+                Math.min(units, 200) - 100;
+
+            const rate = 0;
+
+            const amount = slabUnits * rate;
+
+            breakdown.push({
+                slab: "101 - 200",
+                units: slabUnits,
+                rate: rate,
+                amount: amount
+            });
+
+            totalAmount += amount;
+        }
+
+
+        // 201 - 400
+
+        if (units > 200) {
+
+            const slabUnits =
+                Math.min(units, 400) - 200;
+
+            const rate = 4.70;
+
+            const amount = slabUnits * rate;
+
+            breakdown.push({
+                slab: "201 - 400",
+                units: slabUnits,
+                rate: rate,
+                amount: amount
+            });
+
+            totalAmount += amount;
+        }
+
+
+        // 401 - 500
+
+        if (units > 400) {
+
+            const slabUnits =
+                Math.min(units, 500) - 400;
+
+            const rate = 6.30;
+
+            const amount = slabUnits * rate;
+
+            breakdown.push({
+                slab: "401 - 500",
+                units: slabUnits,
+                rate: rate,
+                amount: amount
+            });
+
+            totalAmount += amount;
+        }
+
+    }
+
+
+    /*
+    ==========================================
+    ABOVE 500 UNITS
+    ==========================================
+
+    1 - 100       ₹0
+    101 - 400     ₹4.70
+    401 - 500     ₹6.30
+    501 - 600     ₹8.40
+    601 - 800     ₹9.45
+    801 - 1000    ₹10.50
+    1001+         ₹11.55
+    */
+
+
+    else {
+
+        document.getElementById("tariffType").textContent =
+            "Above 500 Units";
+
+
+        // 1 - 100
+
+        breakdown.push({
+            slab: "1 - 100",
+            units: 100,
+            rate: 0,
+            amount: 0
+        });
+
+
+        // 101 - 400
+
+        const units101_400 = 300;
+        const amount101_400 = units101_400 * 4.70;
+
+        breakdown.push({
+            slab: "101 - 400",
+            units: units101_400,
+            rate: 4.70,
+            amount: amount101_400
+        });
+
+        totalAmount += amount101_400;
+
+
+        // 401 - 500
+
+        const units401_500 = 100;
+        const amount401_500 = units401_500 * 6.30;
+
+        breakdown.push({
+            slab: "401 - 500",
+            units: units401_500,
+            rate: 6.30,
+            amount: amount401_500
+        });
+
+        totalAmount += amount401_500;
+
+
+        // 501 - 600
+
+        if (units > 500) {
+
+            const slabUnits =
+                Math.min(units, 600) - 500;
+
+            const rate = 8.40;
+
+            const amount = slabUnits * rate;
+
+            breakdown.push({
+                slab: "501 - 600",
+                units: slabUnits,
+                rate: rate,
+                amount: amount
+            });
+
+            totalAmount += amount;
+        }
+
+
+        // 601 - 800
+
+        if (units > 600) {
+
+            const slabUnits =
+                Math.min(units, 800) - 600;
+
+            const rate = 9.45;
+
+            const amount = slabUnits * rate;
+
+            breakdown.push({
+                slab: "601 - 800",
+                units: slabUnits,
+                rate: rate,
+                amount: amount
+            });
+
+            totalAmount += amount;
+        }
+
+
+        // 801 - 1000
+
+        if (units > 800) {
+
+            const slabUnits =
+                Math.min(units, 1000) - 800;
+
+            const rate = 10.50;
+
+            const amount = slabUnits * rate;
+
+            breakdown.push({
+                slab: "801 - 1000",
+                units: slabUnits,
+                rate: rate,
+                amount: amount
+            });
+
+            totalAmount += amount;
+        }
+
+
+        // 1001+
+
+        if (units > 1000) {
+
+            const slabUnits = units - 1000;
+
+            const rate = 11.55;
+
+            const amount = slabUnits * rate;
+
+            breakdown.push({
+                slab: "1001+",
+                units: slabUnits,
+                rate: rate,
+                amount: amount
+            });
+
+            totalAmount += amount;
+        }
+
+    }
+
+
+    // Show total units
+
+    document.getElementById("totalUnits").textContent =
+        units;
+
+
+    // Show amount
+
+    document.getElementById("totalAmount").textContent =
+        "₹" + totalAmount.toFixed(2);
+
+
+    // Generate breakdown
+
+    const tbody =
+        document.getElementById("breakdownBody");
+
+    tbody.innerHTML = "";
+
+
+    breakdown.forEach(function(row) {
+
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${row.slab}</td>
+            <td>${row.units}</td>
+            <td>₹${row.rate.toFixed(2)}</td>
+            <td>₹${row.amount.toFixed(2)}</td>
+        `;
+
+        tbody.appendChild(tr);
+
+    });
+
+
+    // Show result
+
+    result.style.display = "block";
+}
+
+
+// Allow Enter key
+
+document.getElementById("units").addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Enter") {
+            calculateBill();
+        }
+
+    }
+);
+
+</script>
 
 </body>
 </html>
